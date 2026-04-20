@@ -1,14 +1,19 @@
 resource "aws_instance" "terraform" {
+    for_each = toset(var.instances)
     ami = "ami-0220d79f3f480ecf5"
-    instance_type = "t3.micro"
-    vpc_security_group_ids = [aws_security_group.allow-all.id]
+    instance_type = var.instance_type[each.key]
+    vpc_security_group_ids = [aws_security_group.allow_all.id]
     tags = {
-        name = "terraform-1"
+        Name = each.key
         terraform = "true"
 
     }
 
 }
+
+
+
+
 
 resource "aws_security_group" "allow_all" {
   name   = "allow-all"
